@@ -1,0 +1,52 @@
+import os
+import pyfiglet
+
+def clear_console():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def print_large_text(text):
+    ascii_art = pyfiglet.figlet_format(text)
+    lines = ascii_art.split("\n")
+    max_length = max(len(line) for line in lines)
+    border = "+" + "-"*(max_length + 2) + "+"
+    
+    print(border)
+    for line in lines:
+        print("| " + line.ljust(max_length) + " |")
+    print(border)
+
+def login():
+    while True:
+        clear_console()
+        print_large_text("LOGIN")
+        username = input("Username: ")
+        password = input("Password: ")
+
+        if username == "admin" and password == "password":
+            print("Login Success! Welcome to MyPlintirio!")
+            input("Press Enter to continue...")
+            show_dashboard()
+            break
+        else:
+            print("Login Failed! Invalid username or password.")
+            input("Press Enter to try again...")
+
+def show_dashboard():
+    clear_console()
+    print_large_text("MyPlintirio")
+    print("\n" + "+" + "-"*30 + "+")
+    print("|" + " " * 30 + "|")
+    print("|" + " " * 10 + "MENU" + " " * 14 + "|")
+    print("|" + " " * 30 + "|")
+    print("+" + "-"*30 + "+")
+    print("| 1. Option 1" + " " * 18 + "|")
+    print("| 2. Option 2" + " " * 18 + "|")
+    print("| 3. Option 3" + " " * 18 + "|")
+    print("| 4. Logout" + " " * 20 + "|")
+    print("+" + "-"*30 + "+")
+    choice = input("Choose an option: ")
+    if choice == '4':
+        login()
+
+# Main execution
+login()
