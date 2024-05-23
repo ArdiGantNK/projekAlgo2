@@ -15,7 +15,7 @@ def print_large_text(text):
         print("| " + line.ljust(max_length) + " |")
     print(border)
 
-def login():
+def admin():
     while True:
         clear_console()
         print_large_text("LOGIN")
@@ -35,18 +35,22 @@ def show_dashboard():
     clear_console()
     print_large_text("MyPlintirio")
     print("\n" + "+" + "-"*30 + "+")
-    print("|" + " " * 30 + "|")
-    print("|" + " " * 10 + "MENU" + " " * 14 + "|")
-    print("|" + " " * 30 + "|")
+    #print("|" + " " * 30 + "|")
+    print("|" + " " * 10 + "MENU  " + " " * 14 + "|")
+    #print("|" + " " * 30 + "|")
     print("+" + "-"*30 + "+")
-    print("| 1. Option 1" + " " * 18 + "|")
-    print("| 2. Option 2" + " " * 18 + "|")
-    print("| 3. Option 3" + " " * 18 + "|")
-    print("| 4. Logout" + " " * 20 + "|")
+    print("| 1. Menu Admin" + " " * 16 + "|")
+    print("| 2. Menu Owner" + " " * 16 + "|")
+    print("| 3. Logout    " + " " * 16 + "|")
     print("+" + "-"*30 + "+")
     choice = input("Choose an option: ")
-    if choice == '4':
-        login()
+    if choice == '1':
+        admin()
+    elif choice == '2':
+        Owner()
+    else choice == '3':
+        main()
 
 # Main execution
-login()
+show_dashboard()
+
