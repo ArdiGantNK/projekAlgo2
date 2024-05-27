@@ -1,0 +1,248 @@
+import os
+import csv
+import pyfiglet
+
+FILE_PENGGUNA = 'pengguna.csv'
+FILE_PELANGGAN = 'pelanggan.csv'
+FILE_PELANGGAN_DIHAPUS = 'pelanggan_dihapus.csv'
+
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def cetak_teks_besar(teks):
+    ascii_art = pyfiglet.figlet_format(teks)
+    baris = ascii_art.split("\n")
+    panjang_maksimum = max(len(line) for line in baris)
+    batas = "+" + "-"*(panjang_maksimum + 2) + "+"
+    
+    print(batas)
+    for line in baris:
+        print("| " + line.ljust(panjang_maksimum) + " |")
+    print(batas)
+
+def muat_pengguna():
+    pengguna = {}
+    if os.path.exists(FILE_PENGGUNA):
+        with open(FILE_PENGGUNA, mode='r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+                if row:
+                    pengguna[row[0]] = row[1]
+    return pengguna
+
+def simpan_pengguna(username, password):
+    with open(FILE_PENGGUNA, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow([username, password])
+
+def muat_pelanggan():
+    pelanggan = []
+    if os.path.exists(FILE_PELANGGAN):
+        with open(FILE_PELANGGAN, mode='r') as file:
+            reader = csv.reader(file)
+            pelanggan = [row for row in reader]
+    return pelanggan
+
+def simpan_pelanggan(pelanggan):
+    with open(FILE_PELANGGAN, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(pelanggan)
+
+def muat_pelanggan_dihapus():
+    pelanggan_dihapus = []
+    if os.path.exists(FILE_PELANGGAN_DIHAPUS):
+        with open(FILE_PELANGGAN_DIHAPUS, mode='r') as file:
+            reader = csv.reader(file)
+            pelanggan_dihapus = [row for row in reader]
+    return pelanggan_dihapus
+
+def simpan_pelanggan_dihapus(pelanggan):
+    with open(FILE_PELANGGAN_DIHAPUS, mode='a', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(pelanggan)
+
+def admin():
+    while True:
+        cls()
+        cetak_teks_besar("       Admin          ")
+        print("\n" + "+" + "-"*30 + "+")
+        print("|" + " " * 30 + "|")
+        print("|" + " " * 6 + "1. Login" + " " * 17 + "|")
+        print("|" + " " * 6 + "2. Daftar" + " " * 16 + "|")
+        print("|" + " " * 30 + "|")
+        print("+" + "-"*30 + "+")
+        pilihan = input("Pilih opsi: ")
+        if pilihan == '1':
+            login()
+            break
+        elif pilihan == '2':
+            daftar()
+            break
+
+
+def login():
+    db_pengguna = muat_pengguna()
+    while True:
+        cls()
+        cetak_teks_besar("Login")
+        print("1. Login")
+        print("2. Keluar")
+        pilihan = input("Pilih opsi: ")
+        
+        if pilihan == "2":
+            print("Terima kasih telah menggunakan MyPlintirio!")
+            break
+        elif pilihan == "1":
+            username = input("Username: ")
+            password = input("Password: ")
+
+            if username in db_pengguna and db_pengguna[username] == password:
+                print("Login Berhasil! Selamat datang di MyPlintirio!")
+                input("Tekan Enter buat lanjut...")
+                menu_admin()
+                break
+            else:
+                print("Login Gagal! Username atau password salah.")
+                input("Tekan Enter buat coba lagi...")
+        else:
+            print("Pilihan tidak valid. Silakan coba lagi.")
+            input("Tekan Enter buat coba lagi...")
+
+def daftar():
+    db_pengguna = muat_pengguna()
+    while True:
+        cls()
+        cetak_teks_besar("Daftar")
+        username = input("Pilih Username: ")
+        if username in db_pengguna:
+            print("Username udah ada. Pilih yang lain ya.")
+            input("Tekan Enter buat coba lagi...")
+        else:
+            password = input("Pilih Password: ")
+            simpan_pengguna(username, password)
+            print("Daftar Berhasil! Kamu bisa login sekarang.")
+            input("Tekan Enter buat lanjut...")
+            break
+    login()
+
+def menu_admin():
+    while True:
+        cls()
+        cetak_teks_besar("Menu Admin")
+        print("\n" + "+" + "-"*30 + "+")
+        print("|" + " " * 30 + "|")
+        print("|" + " " * 6 + "1. Lihat Pelanggan" + " " * 9 + "|")
+        print("|" + " " * 6 + "2. Tambah Pelanggan" + " " * 6 + "|")
+        print("|" + " " * 6 + "3. Update Pelanggan" + " " * 6 + "|")
+        print("|" + " " * 6 + "4. Hapus Pelanggan" + " " * 7 + "|")
+        print("|" + " " * 6 + "5. Pelanggan Yang Dihapus" + " " * 2 + "|")
+        print("|" + " " * 6 + "6. Logout" + " " * 17 + "|")
+        print("|" + " " * 30 + "|")
+        print("+" + "-"*30 + "+")
+        pilihan = input("Pilih opsi: ")
+        if pilihan == '1':
+            lihat_pelanggan()
+        elif pilihan == '2':
+            tambah_pelanggan()
+        elif pilihan == '3':
+            update_pelanggan()
+        elif pilihan == '4':
+            hapus_pelanggan()
+        elif pilihan == '5':
+            lihat_pelanggan_dihapus()
+        elif pilihan == '6':
+            tampilkan_dashboard()
+            break
+
+def lihat_pelanggan():
+    cls()
+    cetak_teks_besar("Data Pelanggan")
+    pelanggan = muat_pelanggan()
+    if pelanggan:
+        for idx, p in enumerate(pelanggan, start=1):
+            print(f"{idx}. {p[0]} - {p[1]}")
+    else:
+        print("Tidak ada data pelanggan.")
+    input("\nTekan Enter buat kembali...")
+
+def lihat_pelanggan_dihapus():
+    cls()
+    cetak_teks_besar("Pelanggan Dihapus")
+    pelanggan_dihapus = muat_pelanggan_dihapus()
+    if pelanggan_dihapus:
+        for idx, p in enumerate(pelanggan_dihapus, start=1):
+            print(f"{idx}. {p[0]} - {p[1]}")
+    else:
+        print("Tidak ada data pelanggan yang dihapus.")
+    input("\nTekan Enter buat kembali...")
+
+def tambah_pelanggan():
+    cls()
+    cetak_teks_besar("Tambah Pelanggan")
+    nama = input("Nama: ")
+    kontak = input("Kontak: ")
+    pelanggan = muat_pelanggan()
+    pelanggan.append([nama, kontak])
+    simpan_pelanggan(pelanggan)
+    print("Pelanggan berhasil ditambahkan!")
+    input("Tekan Enter buat kembali...")
+
+def update_pelanggan():
+    cls()
+    cetak_teks_besar("Update Pelanggan")
+    pelanggan = muat_pelanggan()
+    if pelanggan:
+        for idx, p in enumerate(pelanggan, start=1):
+            print(f"{idx}. {p[0]} - {p[1]}")
+        pilihan = int(input("\nPilih nomor pelanggan yang mau di-update: ")) - 1
+        if 0 <= pilihan < len(pelanggan):
+            nama = input("Nama baru: ")
+            kontak = input("Kontak baru: ")
+            pelanggan[pilihan] = [nama, kontak]
+            simpan_pelanggan(pelanggan)
+            print("Pelanggan berhasil di-update!")
+        else:
+            print("Pilihan tidak valid.")
+    else:
+        print("Tidak ada data pelanggan.")
+    input("Tekan Enter buat kembali...")
+
+def hapus_pelanggan():
+    cls()
+    cetak_teks_besar("Hapus Pelanggan")
+    pelanggan = muat_pelanggan()
+    if pelanggan:
+        for idx, p in enumerate(pelanggan, start=1):
+            print(f"{idx}. {p[0]} - {p[1]}")
+        pilihan = int(input("\nPilih nomor pelanggan yang mau dihapus: ")) - 1
+        if 0 <= pilihan < len(pelanggan):
+            pelanggan_dihapus = pelanggan.pop(pilihan)
+            simpan_pelanggan(pelanggan)
+            simpan_pelanggan_dihapus(pelanggan_dihapus)
+            print("Pelanggan berhasil dihapus!")
+        else:
+            print("Pilihan tidak valid.")
+    else:
+        print("Tidak ada data pelanggan.")
+    input("Tekan Enter buat kembali...")
+
+def tampilkan_dashboard():
+    cls()
+    cetak_teks_besar("MyPlintirio")
+    print("\n" + "+" + "-"*30 + "+")
+    print("|" + " " * 10 + "MENU  " + " " * 14 + "|")
+    print("+" + "-"*30 + "+")
+    print("| 1. Menu Admin" + " " * 16 + "|")
+    print("| 2. Menu Owner" + " " * 14 + "|")
+    print("| 3. Logout    " + " " * 16 + "|")
+    print("+" + "-"*30 + "+")
+    pilihan = input("Pilih opsi: ")
+    if pilihan == '1':
+        admin()
+    # elif pilihan == '2':
+    #     pemilik()
+    # else:
+    #     main()
+
+# Eksekusi utama
+tampilkan_dashboard()
